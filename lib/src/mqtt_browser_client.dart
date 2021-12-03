@@ -30,6 +30,12 @@ class MqttBrowserClient extends MqttClient {
     this.maxConnectionAttempts = 3,
   }) : super.withPort(server, clientIdentifier, port);
 
+  /// If set use a websocket connection, otherwise use the default TCP one
+  bool useWebSocket = false;
+
+  /// If set use the alternate websocket implementation
+  bool useAlternateWebSocketImplementation = false;
+
   /// Max connection attempts
   final int maxConnectionAttempts;
 
@@ -40,17 +46,22 @@ class MqttBrowserClient extends MqttClient {
   /// supply your own connection message and use the authenticateAs method to
   /// set these parameters do not set them again here.
   @override
-  Future<MqttClientConnectionStatus?> connect(
-      [String? username, String? password]) async {
+  Future<MqttClientConnectionStatus?> connect([String? username, String? password]) async {
     instantiationCorrect = true;
     clientEventBus = events.EventBus();
-    clientEventBus
-        ?.on<DisconnectOnNoPingResponse>()
-        .listen(disconnectOnNoPingResponse);
+    clientEventBus?.on<DisconnectOnNoPingResponse>().listen(disconnectOnNoPingResponse);
     connectionHandler = SynchronousMqttBrowserConnectionHandler(
       clientEventBus,
       maxConnectionAttempts: maxConnectionAttempts,
     );
+    if (useWebSocket) {
+      connectionHandler.secure = false;
+      connectionHandler.useWebSocket = true;
+      connectionHandler.useAlternateWebSocketImplementation = useAlternateWebSocketImplementation;
+      if (websocketProtocolString != null) {
+        connectionHandler.websocketProtocols = websocketProtocolString;
+      }
+    }
     return await super.connect(username, password);
   }
 }
