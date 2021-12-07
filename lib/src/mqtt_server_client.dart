@@ -31,7 +31,7 @@ class MqttServerClient extends MqttClient {
   }) : super.withPort(server, clientIdentifier, port);
 
   /// The security context for secure usage
-  SecurityContext securityContext = SecurityContext.defaultContext;
+  SecurityContext securityContext = SecurityContext();
 
   /// Callback function to handle bad certificate. if true, ignore the error.
   bool Function(X509Certificate certificate)? onBadCertificate;
@@ -56,13 +56,10 @@ class MqttServerClient extends MqttClient {
   /// supply your own connection message and use the authenticateAs method to
   /// set these parameters do not set them again here.
   @override
-  Future<MqttClientConnectionStatus?> connect(
-      [String? username, String? password]) async {
+  Future<MqttClientConnectionStatus?> connect([String? username, String? password]) async {
     instantiationCorrect = true;
     clientEventBus = events.EventBus();
-    clientEventBus
-        ?.on<DisconnectOnNoPingResponse>()
-        .listen(disconnectOnNoPingResponse);
+    clientEventBus?.on<DisconnectOnNoPingResponse>().listen(disconnectOnNoPingResponse);
     connectionHandler = SynchronousMqttServerConnectionHandler(
       clientEventBus,
       maxConnectionAttempts: maxConnectionAttempts,
@@ -70,8 +67,7 @@ class MqttServerClient extends MqttClient {
     if (useWebSocket) {
       connectionHandler.secure = false;
       connectionHandler.useWebSocket = true;
-      connectionHandler.useAlternateWebSocketImplementation =
-          useAlternateWebSocketImplementation;
+      connectionHandler.useAlternateWebSocketImplementation = useAlternateWebSocketImplementation;
       if (websocketProtocolString != null) {
         connectionHandler.websocketProtocols = websocketProtocolString;
       }
