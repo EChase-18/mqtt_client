@@ -9,7 +9,7 @@ library mqtt_server_client;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+// import 'dart:io';
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:event_bus/event_bus.dart' as events;

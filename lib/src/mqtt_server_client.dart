@@ -31,10 +31,10 @@ class MqttServerClient extends MqttClient {
   }) : super.withPort(server, clientIdentifier, port);
 
   /// The security context for secure usage
-  SecurityContext? securityContext;
+  // SecurityContext? securityContext;
 
   /// Callback function to handle bad certificate. if true, ignore the error.
-  bool Function(X509Certificate certificate)? onBadCertificate;
+  // bool Function(X509Certificate certificate)? onBadCertificate;
 
   /// If set use a websocket connection, otherwise use the default TCP one
   bool useWebSocket = false;
@@ -76,8 +76,8 @@ class MqttServerClient extends MqttClient {
       connectionHandler.secure = true;
       connectionHandler.useWebSocket = false;
       connectionHandler.useAlternateWebSocketImplementation = false;
-      connectionHandler.securityContext = securityContext;
-      connectionHandler.onBadCertificate = onBadCertificate;
+      // connectionHandler.securityContext = securityContext;
+      // connectionHandler.onBadCertificate = onBadCertificate;
     }
     return await super.connect(username, password);
   }
